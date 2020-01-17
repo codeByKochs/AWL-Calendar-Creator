@@ -10,33 +10,25 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class HtmlCalendarFinder {
+public class HtmlEventsFinder {
 
     private String url;
-    private Event[] calendar;
+    private List<String> events;
 
-    public HtmlCalendarFinder() {
-        //TODO change to list
-//        calendar = new Date[365];
-        this.url = "";
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
+    public HtmlEventsFinder(String url) {
+        this.events = new ArrayList<String>();
         this.url = url;
     }
 
-    public Event[] getCalendar() {
-        return calendar;
+    public List<String> getEventsList() {
+        return events;
     }
 
-    //TODO set to private, return list of schedule dates
-    public void extractScheduleDates() {
+    public void extractEvents() {
 
         Document htmlDoc = getHtmlDocument();
 
@@ -56,7 +48,7 @@ public class HtmlCalendarFinder {
 
                 if (!event.equals("")){
                     int dayInt = findDayInt(day);
-                    System.out.println(dayInt+"."+monthInt+"."+year+" "+event);
+                    events.add(dayInt+"."+monthInt+"."+year+" "+event);
                 }
             }
         }
