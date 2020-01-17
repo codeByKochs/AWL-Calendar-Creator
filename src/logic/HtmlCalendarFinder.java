@@ -1,29 +1,18 @@
 package logic;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class HtmlCalendarFinder {
-
-    static final String HTML_MONTH_WRAPPER_START = "<div class=\"month\">";
-    static final String HTML_MONTH_WRAPPER_END = "</div>";
-
-    static final String HTML_DAY_WRAPPER_START = "<tr class=\"singleDay wednesday\">";
-    static final String HTML_DAY_WRAPPER_END = "</tr>";
-
-    static final String HTML_DATE_WRAPPER_START = ">";
-    static final String HTML_DATE_WRAPPER_END = "<";
-
-    static final String HTML_EVENT_WRAPPER_START = ">";
-    static final String HTML_EVENT_WRAPPER_END = "<";
-
 
     private String url;
     private Event[] calendar;
@@ -48,146 +37,102 @@ public class HtmlCalendarFinder {
 
     //TODO set to private, return list of schedule dates
     public void extractScheduleDates() {
-        String sourceData = getHtmlString();
-        String monthData[] = findMonthData(sourceData);
 
-        for (String singleMonthData : monthData) {
-            //find month from HTML data
-            int month = findMonth(singleMonthData);
+        Document htmlDoc = getHtmlDocument();
 
-            //find list of single days and their info
-            List<String> dayData = findDayData(singleMonthData);
+        //extracting single month data from html
+        Elements monthsElements = htmlDoc.getElementsByClass("singleMonth");
 
-            for (String singleDayData : dayData){
+        for (Element monthElement : monthsElements){
+            int monthInt = findMonthInt(monthElement);
 
-                //TODO if event is found create a Date with the event and add it to the list of event days
-                int date = findDate(singleDayData);
-                String event = findEvent(singleDayData);
-                int year = findYear(singleDayData);
+            //extracting single day data from html
+            Elements days = monthElement.getElementsByClass("singleDay");
+            for (Element day : days){
+                String event = findEvent(day);
 
-                if (event != null){
-                    System.out.println(date+"."+month+"."+year+" "+" event: "+event);
+                if (!event.equals("")){
+                    int dayInt = findDayInt(day);
+                    System.out.println(dayInt+"."+monthInt+" event: "+event);
                 }
             }
         }
     }
 
-    public String[] findMonthData(String data) {
+    private int findMonthInt(Element monthElement){
 
-        String monthMatches[] = new String[12];
+        Integer monthInt = -999;
 
-        Pattern monthPattern = Pattern.compile(HTML_MONTH_WRAPPER_START + ".+?" + HTML_MONTH_WRAPPER_END);
-        Matcher monthMatcher = monthPattern.matcher(data);
+//        Elements monthNames = monthElement.getElementsByClass("monthName");
 
-        try {
-            int counter = 0;
-            while (monthMatcher.find()) {
-                monthMatches[counter] = monthMatcher.group();
-                counter++;
-            }
+        String monthName = monthElement.getElementsByClass("monthName").text();
 
+        if (monthName.contains("Januar")){
+            return 1;
         }
-        catch (Exception e){
-            System.out.println("Exception Error while searching for month data: "+e.getMessage());
+        if (monthName.contains("Februar")){
+            return 2;
         }
-        return monthMatches;
-    }
-
-    public int findYear(String data){
-        //TODO rework
-        return 2020;
-    }
-
-    public int findMonth(String data){
-        try{
-            Pattern monthNamePattern = Pattern.compile("(Januar|Februar|M&auml;rz|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)");
-            Matcher monthNameMatcher = monthNamePattern.matcher(data);
-            monthNameMatcher.find();
-            String monthName = monthNameMatcher.group();
-            if (monthName.equals("M&auml;rz")) {
-                monthName = "März";
-            }
-            switch (monthName){
-                case "Januar":
-                    return 1;
-                case "Februar":
-                    return 2;
-                case "März":
-                    return 3;
-                case "April":
-                    return 4;
-                case "Mai":
-                    return 5;
-                case "Juni":
-                    return 6;
-                case "Juli":
-                    return 7;
-                case "August":
-                    return 8;
-                case "September":
-                    return 9;
-                case "Oktober":
-                    return 10;
-                case "November":
-                    return 11;
-                case "Dezember":
-                    return 12;
-                default:
-                    return 0;
-            }
+        if (monthName.contains("März")){
+            return 3;
         }
-        catch (Exception e){
-            System.out.println("Exception Error while searching for month: "+e.getMessage());
-            return 0;
+        if (monthName.contains("April")){
+            return 4;
         }
-    }
-
-    public List<String> findDayData(String data){
-        List<String> dayMatches = new ArrayList<String>();
-        try {
-            Pattern dayPattern = Pattern.compile(HTML_DAY_WRAPPER_START + ".+?" + HTML_DAY_WRAPPER_END);
-            Matcher dayMatcher = dayPattern.matcher(data);
-
-            while (dayMatcher.find()) {
-                dayMatches.add(dayMatcher.group());
-            }
-            return dayMatches;
+        if (monthName.contains("Mai")){
+            return 5;
+        }   if (monthName.contains("Juni")){
+            return 6;
         }
-        catch (Exception e){
-            System.out.println("Exception Error while searching for day data: "+e.getMessage());
-            return null;
+        if (monthName.contains("Juli")){
+            return 7;
         }
-    }
-
-    public int findDate(String data){
-        try{
-            Pattern datePattern = Pattern.compile(HTML_DATE_WRAPPER_START + "/d{1,2}" + HTML_DATE_WRAPPER_END);
-            Matcher dateMatcher = datePattern.matcher(data);
-            dateMatcher.find();
-
-            return Integer.parseInt(dateMatcher.group().substring(HTML_DATE_WRAPPER_START.length(), dateMatcher.group().length()-HTML_DATE_WRAPPER_END.length()-1));
+        if (monthName.contains("August")){
+            return 8;
         }
-        catch (Exception e){
-            System.out.println("Exception Error while searching for date: "+e.getMessage());
+        if (monthName.contains("September")){
+            return 9;
+        }
+        if (monthName.contains("Oktober")){
+            return 10;
+        }
+        if (monthName.contains("November")){
+            return 11;
+        }
+        if (monthName.contains("Dezember")){
+            return 12;
+        }
+        else{
             return -999;
         }
     }
 
-    public String findEvent(String data){
-        try{
-            Pattern eventPattern = Pattern.compile(HTML_EVENT_WRAPPER_START + "(B|R|P|G|BIO)" + HTML_EVENT_WRAPPER_END);
-            Matcher eventMatcher = eventPattern.matcher(data);
-            eventMatcher.find();
+    private String findEvent(Element dayElement){
 
-            return eventMatcher.group().substring(HTML_EVENT_WRAPPER_START.length(), eventMatcher.group().length()-HTML_EVENT_WRAPPER_END.length());
+        String eventString = "";
+
+        Elements eventElements = dayElement.getElementsByClass("events");
+
+        for (Element event : eventElements){
+            if (!event.text().equals("")){
+                switch (event.text()){
+                    case "B": eventString = "blaue Tonne"; break;
+                    case "R": eventString = "graue Tonne"; break;
+                    case "RP": eventString = "graue Tonne"; break;
+                    case "BIO": eventString = "Bio-Tonne"; break;
+                    case "G": eventString = "gelbe Tonne"; break;
+                }
+            }
         }
-        catch (Exception e){
-            System.out.println("Exception Error while searching for event: "+e.getMessage());
-            return null;
-        }
+        return eventString;
     }
 
-    public String getHtmlString() {
+    private int findDayInt(Element dayElement){
+
+        return Integer.parseInt(dayElement.getElementsByClass("number").text());
+    }
+
+    private Document getHtmlDocument() {
         try {
             String LINE_SEPARATOR = System.getProperty("line.separator");
 
@@ -201,10 +146,12 @@ public class HtmlCalendarFinder {
                 stringBuilder.append(nextLine);
                 stringBuilder.append(LINE_SEPARATOR);
             }
-            final String siteText = stringBuilder.toString();
-            return siteText;
+            final String html = stringBuilder.toString();
+
+            return Jsoup.parse(html, "utf-8");
         } catch (Exception e) {
-            return "An error occurred: " + e.getClass() + " " + e.getMessage();
+            System.out.println("An error occurred: " + e.getClass() + " " + e.getMessage());
+            return null;
         }
     }
 }
