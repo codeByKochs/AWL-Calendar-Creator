@@ -40,6 +40,9 @@ public class HtmlCalendarFinder {
 
         Document htmlDoc = getHtmlDocument();
 
+        //finding current year in html
+        int year = findYear(htmlDoc);
+
         //extracting single month data from html
         Elements monthsElements = htmlDoc.getElementsByClass("singleMonth");
 
@@ -53,17 +56,17 @@ public class HtmlCalendarFinder {
 
                 if (!event.equals("")){
                     int dayInt = findDayInt(day);
-                    System.out.println(dayInt+"."+monthInt+" event: "+event);
+                    System.out.println(dayInt+"."+monthInt+"."+year+" "+event);
                 }
             }
         }
     }
 
+    private int findYear(Document htmlDocument){
+        return Integer.parseInt(url.substring(url.length()-4));
+    }
+
     private int findMonthInt(Element monthElement){
-
-        Integer monthInt = -999;
-
-//        Elements monthNames = monthElement.getElementsByClass("monthName");
 
         String monthName = monthElement.getElementsByClass("monthName").text();
 
