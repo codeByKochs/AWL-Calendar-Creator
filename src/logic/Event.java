@@ -3,12 +3,12 @@ package logic;
 public class Event {
 
     private int day;
-    private String month;
+    private int month;
     private int year;
     private String event;
 
 
-    public Event(int day, String month, int year, String event) {
+    public Event(int day, int month, int year, String event) {
         this.day = day;
         this.month = month;
         this.year = year;
@@ -19,7 +19,7 @@ public class Event {
         return day;
     }
 
-    public String getMonth() {
+    public int getMonth() {
         return month;
     }
 

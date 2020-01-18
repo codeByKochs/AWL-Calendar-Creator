@@ -17,14 +17,14 @@ import java.util.List;
 public class HtmlEventsFinder {
 
     private String url;
-    private List<String> events;
+    private List<Event> events;
 
     public HtmlEventsFinder(String url) {
-        this.events = new ArrayList<String>();
+        this.events = new ArrayList<Event>();
         this.url = url;
     }
 
-    public List<String> getEventsList() {
+    public List<Event> getEventsList() {
         return events;
     }
 
@@ -48,7 +48,7 @@ public class HtmlEventsFinder {
 
                 if (!event.equals("")){
                     int dayInt = findDayInt(day);
-                    events.add(dayInt+"."+monthInt+"."+year+" "+event);
+                    events.add(new Event(dayInt, monthInt, year, event));
                 }
             }
         }
