@@ -2,18 +2,15 @@ package logic;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.*;
+import net.fortuna.ical4j.model.component.VAlarm;
 import net.fortuna.ical4j.model.component.VEvent;
-import net.fortuna.ical4j.model.component.VTimeZone;
-import net.fortuna.ical4j.model.property.CalScale;
-import net.fortuna.ical4j.model.property.ProdId;
-import net.fortuna.ical4j.model.property.Version;
+import net.fortuna.ical4j.model.property.*;
 import net.fortuna.ical4j.util.RandomUidGenerator;
 import net.fortuna.ical4j.util.UidGenerator;
-import net.fortuna.ical4j.model.TimeZoneRegistryFactory;
-import net.fortuna.ical4j.model.TimeZone;
 
 
 import java.io.FileOutputStream;
+import java.time.Duration;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -40,19 +37,21 @@ public class CalendarFileCreator {
 
             //create start date
             java.util.Calendar startDate = new GregorianCalendar();
+            startDate.clear();
             startDate.set(java.util.Calendar.MONTH, event.getMonth());
             startDate.set(java.util.Calendar.DAY_OF_MONTH, event.getDay());
             startDate.set(java.util.Calendar.YEAR, event.getYear());
-            startDate.set(java.util.Calendar.HOUR_OF_DAY, 18);
+            startDate.set(java.util.Calendar.HOUR_OF_DAY, 8);
             startDate.set(java.util.Calendar.MINUTE, 0);
             startDate.set(java.util.Calendar.SECOND, 0);
 
             //create end date
             java.util.Calendar endDate = new GregorianCalendar();
+            endDate.clear();
             endDate.set(java.util.Calendar.MONTH, event.getMonth());
             endDate.set(java.util.Calendar.DAY_OF_MONTH, event.getDay());
             endDate.set(java.util.Calendar.YEAR, event.getYear());
-            endDate.set(java.util.Calendar.HOUR_OF_DAY, 19);
+            endDate.set(java.util.Calendar.HOUR_OF_DAY, 9);
             endDate.set(java.util.Calendar.MINUTE, 0);
             endDate.set(java.util.Calendar.SECOND, 0);
 
@@ -62,13 +61,11 @@ public class CalendarFileCreator {
             DateTime end = new DateTime(endDate.getTime());
             VEvent eventElement = new VEvent(start, end, eventName);
 
-            //create a TimeZone and add it to eventElement
-//            TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry();
-//            TimeZone timezone = registry.getTimeZone("UTC");
-//            VTimeZone tz = timezone.getVTimeZone();
-//            eventElement.getProperties().add(tz.getTimeZoneId());
-
-            //TODO add VAlarm to notify  a day before event occures
+            //generate Alarm a day before the event and add it to event
+            VAlarm reminder = new VAlarm(Duration.ofHours(24));
+            reminder.getProperties().add(new Repeat(1));
+            reminder.getProperties().add(Action.DISPLAY);
+            eventElement.getAlarms().add(reminder);
 
             //generate uid and add it to eventElement
             UidGenerator ug = new RandomUidGenerator();

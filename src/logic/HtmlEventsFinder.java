@@ -62,40 +62,42 @@ public class HtmlEventsFinder {
 
         String monthName = monthElement.getElementsByClass("monthName").text();
 
+        //NOTE in java.util.Calendar months are zero-based! So, January → 0
         if (monthName.contains("Januar")){
-            return 1;
+            return 0;
         }
         if (monthName.contains("Februar")){
-            return 2;
+            return 1;
         }
         if (monthName.contains("März")){
-            return 3;
+            return 2;
         }
         if (monthName.contains("April")){
-            return 4;
+            return 3;
         }
         if (monthName.contains("Mai")){
+            return 4;
+        }
+        if (monthName.contains("Juni")){
             return 5;
-        }   if (monthName.contains("Juni")){
-            return 6;
         }
         if (monthName.contains("Juli")){
-            return 7;
+            return 6;
         }
         if (monthName.contains("August")){
-            return 8;
+            return 7;
         }
         if (monthName.contains("September")){
-            return 9;
+            return 8;
         }
         if (monthName.contains("Oktober")){
-            return 10;
+            return 9;
         }
         if (monthName.contains("November")){
-            return 11;
+            return 10;
         }
         if (monthName.contains("Dezember")){
-            return 12;
+            return 11;
         }
         else{
             return -999;
