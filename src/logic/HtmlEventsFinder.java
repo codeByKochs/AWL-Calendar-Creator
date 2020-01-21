@@ -19,13 +19,16 @@ public class HtmlEventsFinder {
     private String url;
     private List<Event> events;
 
-    public HtmlEventsFinder(String url) {
+    public HtmlEventsFinder() {
         this.events = new ArrayList<Event>();
-        this.url = url;
     }
 
     public List<Event> getEventsList() {
         return events;
+    }
+
+    public void setURL(String url){
+        this.url = url;
     }
 
     public void extractEvents() {
@@ -125,7 +128,6 @@ public class HtmlEventsFinder {
     }
 
     private int findDayInt(Element dayElement){
-
         return Integer.parseInt(dayElement.getElementsByClass("number").text());
     }
 
@@ -151,4 +153,6 @@ public class HtmlEventsFinder {
             return null;
         }
     }
+
+    //TODO check valid input
 }

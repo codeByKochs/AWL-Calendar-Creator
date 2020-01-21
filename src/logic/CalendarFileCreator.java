@@ -19,11 +19,11 @@ public class CalendarFileCreator {
     private List<Event> eventsList;
     private Calendar icsCalendar;
 
-    public CalendarFileCreator(List<Event> eventsList){
+    public Calendar getIcsCalendar() { return icsCalendar; }
+
+    public void setEventsList(List<Event> eventsList) {
         this.eventsList = eventsList;
     }
-
-    public Calendar getIcsCalendar() { return icsCalendar; }
 
     public void createCalendar(){
 
@@ -39,9 +39,9 @@ public class CalendarFileCreator {
             java.util.Calendar startDate = new GregorianCalendar();
             startDate.clear();
             startDate.set(java.util.Calendar.MONTH, event.getMonth());
-            startDate.set(java.util.Calendar.DAY_OF_MONTH, event.getDay());
+            startDate.set(java.util.Calendar.DAY_OF_MONTH, event.getDay()-1);
             startDate.set(java.util.Calendar.YEAR, event.getYear());
-            startDate.set(java.util.Calendar.HOUR_OF_DAY, 8);
+            startDate.set(java.util.Calendar.HOUR_OF_DAY, 18);
             startDate.set(java.util.Calendar.MINUTE, 0);
             startDate.set(java.util.Calendar.SECOND, 0);
 
@@ -49,9 +49,9 @@ public class CalendarFileCreator {
             java.util.Calendar endDate = new GregorianCalendar();
             endDate.clear();
             endDate.set(java.util.Calendar.MONTH, event.getMonth());
-            endDate.set(java.util.Calendar.DAY_OF_MONTH, event.getDay());
+            endDate.set(java.util.Calendar.DAY_OF_MONTH, event.getDay()-1);
             endDate.set(java.util.Calendar.YEAR, event.getYear());
-            endDate.set(java.util.Calendar.HOUR_OF_DAY, 9);
+            endDate.set(java.util.Calendar.HOUR_OF_DAY, 19);
             endDate.set(java.util.Calendar.MINUTE, 0);
             endDate.set(java.util.Calendar.SECOND, 0);
 
@@ -61,11 +61,11 @@ public class CalendarFileCreator {
             DateTime end = new DateTime(endDate.getTime());
             VEvent eventElement = new VEvent(start, end, eventName);
 
-            //generate Alarm a day before the event and add it to event
-            VAlarm reminder = new VAlarm(Duration.ofHours(24));
-            reminder.getProperties().add(new Repeat(1));
-            reminder.getProperties().add(Action.DISPLAY);
-            eventElement.getAlarms().add(reminder);
+//            //generate Alarm a day before the event and add it to event
+//            VAlarm reminder = new VAlarm(Duration.ofHours(24));
+//            reminder.getProperties().add(new Repeat(1));
+//            reminder.getProperties().add(Action.DISPLAY);
+//            eventElement.getAlarms().add(reminder);
 
             //generate uid and add it to eventElement
             UidGenerator ug = new RandomUidGenerator();
@@ -76,17 +76,10 @@ public class CalendarFileCreator {
         }
     }
 
-    public void saveCalendar(){
+    public void saveCalendar(String filePath){
         try{
-            String desktopPath = System.getenv("homepath");
-            desktopPath = "C:"+desktopPath+"\\Desktop\\AWL-Müllabholung.ics";
 
-//            File file = new File(desktopPath);
-//            FileWriter fileWriter = new FileWriter(file);
-
-            FileOutputStream fout = new FileOutputStream(desktopPath);
-
-//            System.out.println(icsCalendar);
+            FileOutputStream fout = new FileOutputStream(filePath);
             CalendarOutputter outputter = new CalendarOutputter();
             outputter.output(icsCalendar, fout);
         }
@@ -94,4 +87,6 @@ public class CalendarFileCreator {
             System.out.println(e.getMessage());
         }
     }
+
+    //TODO check valid input
 }
