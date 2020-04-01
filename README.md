@@ -5,7 +5,7 @@ and converts it into an .ics file, which can be imported into a program like Moz
 
 ## Getting Started
 
-1. Choose your local trash pick up schedule [here](https://www.awl-neuss.de/nc/abfallkalender.html) and copy the URL.
+1. Choose your local trash pick up schedule [here](https://www.awl-neuss.de/abfallkalender.html) and copy the URL.
 2. If desired change the path of the created .ics file
 3. Paste the copied URL in the URL field.
 4. Click 'exportieren'
