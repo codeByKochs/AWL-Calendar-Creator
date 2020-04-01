@@ -1,6 +1,6 @@
 # AWL Calendar Creator
 
-This program imports  the trash pick up schedule from the local service provider [AWL](https://www.awl-neuss.de/nc/abfallkalender.html)
+This program imports  the trash pick up schedule from the local service provider [AWL](https://www.awl-neuss.de/abfallkalender.html)
 and converts it into an .ics file, which can be imported into a program like Mozilla Thunderbird.
 
 ## Getting Started
